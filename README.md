@@ -1,7 +1,8 @@
 # websheets: Working with spreadsheets in go web apps
 
 xlsx files: based on github.com/tealeg/xlsx
-xsv files: based on go's encoding/csv
+
+csv files: based on go's encoding/csv
 
 - Upload xlsx file and return JSON array of arrays.
 - TODO: Upload csv file and return JSON array of arrays.
