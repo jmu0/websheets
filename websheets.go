@@ -102,12 +102,13 @@ func readXlsxFile(filename string) (map[int]map[int]map[int]string, error) {
 			ret[sheetIndex] = make(map[int]map[int]string)
 		}
 		for rowIndex, row := range sheet.Rows {
-			if _, ok := ret[sheetIndex][rowIndex]; !ok {
-				ret[sheetIndex][rowIndex] = make(map[int]string)
-			}
 			for colIndex, cell := range row.Cells {
-				// log.Println(tmpPath, sheetIndex, rowIndex, colIndex, cell.String())
-				ret[sheetIndex][rowIndex][colIndex] = cell.String()
+				if len(cell.String()) > 0 {
+					if _, ok := ret[sheetIndex][rowIndex]; !ok {
+						ret[sheetIndex][rowIndex] = make(map[int]string)
+					}
+					ret[sheetIndex][rowIndex][colIndex] = cell.String()
+				}
 			}
 		}
 	}
