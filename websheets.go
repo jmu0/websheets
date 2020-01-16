@@ -104,10 +104,15 @@ func readXlsxFile(filename string) (map[int]map[int]map[int]string, error) {
 		for rowIndex, row := range sheet.Rows {
 			for colIndex, cell := range row.Cells {
 				if len(cell.String()) > 0 {
+
 					if _, ok := ret[sheetIndex][rowIndex]; !ok {
 						ret[sheetIndex][rowIndex] = make(map[int]string)
 					}
-					ret[sheetIndex][rowIndex][colIndex] = cell.String()
+					if cell.Hyperlink.Link != "" {
+						ret[sheetIndex][rowIndex][colIndex] = cell.Hyperlink.Link
+					} else {
+						ret[sheetIndex][rowIndex][colIndex] = cell.String()
+					}
 				}
 			}
 		}
