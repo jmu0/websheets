@@ -119,3 +119,9 @@ func readXlsxFile(filename string) (map[int]map[int]map[int]string, error) {
 	}
 	return ret, nil
 }
+
+//HandleConvertToSpreadsheet converts array in POST to .xlsx
+func HandleConvertToSpreadsheet(w http.ResponseWriter, r *http.Request) {
+
+	w.Write([]byte("not implemented"))
+}
