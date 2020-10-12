@@ -3,12 +3,14 @@ package websheets
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/tealeg/xlsx"
 )
@@ -120,8 +122,69 @@ func readXlsxFile(filename string) (map[int]map[int]map[int]string, error) {
 	return ret, nil
 }
 
-//HandleConvertToSpreadsheet converts array in POST to .xlsx
+//HandleConvertToSpreadsheet converts array of arrays in POST to .xlsx
 func HandleConvertToSpreadsheet(w http.ResponseWriter, r *http.Request) {
+	var file *xlsx.File
+	var sheet *xlsx.Sheet
+	var row *xlsx.Row
+	var cell *xlsx.Cell
+	var err error
+	var fn, d []string
+	var ok bool
+	var parsedData [][]string
+	type reqData struct {
+		Filename string `json:"filename"`
+		Data     string `json:"data"`
+	}
+	var rd reqData
 
-	w.Write([]byte("not implemented"))
+	switch r.Header.Get("Content-type") {
+	case "application/json":
+		decoder := json.NewDecoder(r.Body)
+		err = decoder.Decode(&rd)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	case "application/x-www-form-urlencoded":
+		r.ParseForm()
+		if fn, ok = r.Form["filename"]; ok {
+			rd.Filename = strings.Join(fn, "")
+		} else {
+			rd.Filename = "spreadsheet.xlsx"
+		}
+		if d, ok = r.Form["data"]; !ok {
+			http.Error(w, "No Data", http.StatusInternalServerError)
+			return
+		}
+		rd.Data = strings.Join(d, "")
+	default:
+		http.Error(w, "Invalid content-type", http.StatusInternalServerError)
+		return
+	}
+	err = json.Unmarshal([]byte(rd.Data), &parsedData)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	file = xlsx.NewFile()
+	sheet, err = file.AddSheet("Sheet1")
+	if err != nil {
+		fmt.Printf(err.Error())
+	}
+	for _, r := range parsedData {
+		row = sheet.AddRow()
+		for _, c := range r {
+			cell = row.AddCell()
+			cell.Value = c
+		}
+	}
+	w.Header().Set("Content-Type", "application/octet-stream")
+	w.Header().Set("Content-Description", "Generated .xlsx file")
+	w.Header().Set("Content-Disposition", "attachment; filename="+rd.Filename)
+	err = file.Write(w)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
 }
