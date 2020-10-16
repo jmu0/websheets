@@ -1,7 +1,6 @@
 import { upload, post } from "./ajax.js";
 
 var res = document.querySelector("#result");
-var res = document.querySelector("#result");
 res.value = '[["1","2","3"],["a","b","c"]]';
 
 window.upload = function () {
@@ -24,11 +23,11 @@ window.download = function () {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            "Content-type": "application/json"
-            // "Content-type": "application/x-www-form-urlencoded"
+            // "Content-type": "application/json"
+            "Content-type": "application/x-www-form-urlencoded"
         },
-        // body: "filename="+filename+"&data="+res.value
-        body: JSON.stringify({ filename: filename, data: res.value })
+        body: "filename="+filename+"&data="+res.value
+        // body: JSON.stringify({ filename: filename, data: res.value })
     }).then(res => {
         if (res.ok) {
             return res.blob();
