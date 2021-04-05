@@ -110,11 +110,11 @@ func readXlsxFile(filename string) (map[int]map[int]map[int]string, error) {
 					if _, ok := ret[sheetIndex][rowIndex]; !ok {
 						ret[sheetIndex][rowIndex] = make(map[int]string)
 					}
-					if cell.Hyperlink.Link != "" {
-						ret[sheetIndex][rowIndex][colIndex] = cell.Hyperlink.Link
-					} else {
-						ret[sheetIndex][rowIndex][colIndex] = cell.String()
-					}
+					// if cell.Hyperlink.Link != "" {
+					// ret[sheetIndex][rowIndex][colIndex] = cell.Hyperlink.Link
+					// } else {
+					ret[sheetIndex][rowIndex][colIndex] = cell.String()
+					// }
 				}
 			}
 		}
