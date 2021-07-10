@@ -12,7 +12,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/tealeg/xlsx" //REVISION 426ebfef635b70bf2b0f6f341b9a55ae82562029
+	"github.com/tealeg/xlsx" //NEW VERSION BROKEN, USE COMMIT: 426ebfef635b70bf2b0f6f341b9a55ae82562029
 )
 
 //HandleSpreadsheetUpload handle spreadsheet upload
